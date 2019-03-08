@@ -1,11 +1,15 @@
-content = {}
-content["search_term"] = input("Type a Wikipedia query: ")
 
-prefixes = ['Who is', 'What is', 'The history of']
-print("Choose one of the options:", *["[{}] {}".format(i, j) for i, j in enumerate(prefixes)], sep="\n")
-prefix_index = int(input())
+def main():
+    content = {}
+    content["search_term"] = input("Type a Wikipedia query: ")
 
-content["prefix"] = prefixes[prefix_index]
+    prefixes = ['Who is', 'What is', 'The history of']
+    print("Choose one of the options:", *["[{}] {}".format(i, j) for i, j in enumerate(prefixes)], sep="\n")
+    prefix_index = int(input())
 
-print(content)
+    content["prefix"] = prefixes[prefix_index]
 
+    print(content)
+
+if __name__ == "__main__":
+    main()
