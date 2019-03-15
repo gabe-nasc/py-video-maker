@@ -1,3 +1,4 @@
+from text import *
 
 def main():
     content = {}
@@ -9,7 +10,8 @@ def main():
 
     content["prefix"] = prefixes[prefix_index]
 
-    print(content)
+    text(content)
+
 
 if __name__ == "__main__":
     main()
