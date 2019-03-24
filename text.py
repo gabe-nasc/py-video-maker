@@ -2,9 +2,14 @@ from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from nltk import sent_tokenize
 
 import Algorithmia
+import json
 import re
 
 def fetch_wikipedia_article(content):
+    algorithmia_key = ""
+    with open("credentials.json", "r") as file:
+        algorithmia_key = json.loads(file.read())["algorithmia_key"]
+
     client = Algorithmia.client('simAoS+NCBot8SACwnHwpY0ezGR1')   
     algo = client.algo('web/WikipediaParser/0.1.2')  
     content["source_original_content"] = algo.pipe(content['search_term']).result["content"]
@@ -25,7 +30,11 @@ def sanitize_content(content):
 
 # Uses IBM Cloud Natural Language Understanding API to analyze the sentences and get keywords
 def watson_keywords(sentence):
-    nlu = NaturalLanguageUnderstandingV1('2018-04-05', iam_apikey="DT_MSscAMP6nZkLPTCAvf3z3gPA1smlt-GTwA6ewGqaD")
+    watson_key = ""
+    with open("credentials.json", "r") as file:
+        watson_key = json.loads(file.read())["watson_key"]
+
+    nlu = NaturalLanguageUnderstandingV1('2018-04-05', iam_apikey=watson_key)
     analysis = nlu.analyze(features={"keywords":{}}, text=sentence).get_result()
     return [i["text"] for i in analysis["keywords"]]
 
