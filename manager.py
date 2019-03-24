@@ -1,5 +1,4 @@
 from text import *
-import pprint as pp
 
 def main():
     content = {}
@@ -12,8 +11,6 @@ def main():
     content["prefix"] = prefixes[prefix_index]
 
     content = text(content)
-
-
 
 if __name__ == "__main__":
     main()

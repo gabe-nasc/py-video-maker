@@ -1,7 +1,6 @@
 from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from nltk import sent_tokenize
 
-import pprint as pp
 import Algorithmia
 import re
 
@@ -32,17 +31,17 @@ def watson_keywords(sentence):
 
 
 # Breaks the content into understandable sentences
-def break_into_sentences(content):
+def break_into_sentences(content, limit=10):
     content["sentences"] = []
     
-    for sentence in sent_tokenize(content["source_sanitized_content"]):
+    for sentence in sent_tokenize(content["source_sanitized_content"])[:limit]:
         content["sentences"].append({'text':sentence, 'keywords':watson_keywords(sentence), 'images':[]})
     
     return content
 
-def text(content):
+def text(content, max_sentences=10):
     content = fetch_wikipedia_article(content)
     content = sanitize_content(content)
-    content = break_into_sentences(content)
+    content = break_into_sentences(content, max_sentences)
 
     return content
