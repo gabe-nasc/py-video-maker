@@ -1,4 +1,6 @@
 from googleapiclient.discovery import build
+from store import save, load
+
 import requests
 import shutil
 import json
@@ -26,17 +28,19 @@ def download_images(urls):
             n += 1
 
 # Uses Watson Keywords and the original query to fetch images and save to content
-def fetch_sentence_images(content):
+def fetch_sentence_images():
+    content = load()
+
     for index, sentence in enumerate(content["sentences"]):
         query = content["search_term"] + ' ' + sentence['keywords'][0]
         content["sentences"][index]["google_search_query"] = query
         content["sentences"][index]["images"] = fetch_images_urls(query)
     
-    return content
+    save(content)
 
 # Main function to be used in the video maker
-def image(content):
-    return fetch_sentence_images(content)
+def image():
+    fetch_sentence_images()
 
 # Function to search and download images as a standalone script
 def main(query, limit=5):

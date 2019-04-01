@@ -1,22 +1,29 @@
 from watson_developer_cloud import NaturalLanguageUnderstandingV1
 from nltk import sent_tokenize
+from store import save, load
 
 import Algorithmia
 import json
 import re
 
-def fetch_wikipedia_article(content):
+def fetch_wikipedia_article():
+    content = load()
+    
     algorithmia_key = ""
     with open("credentials.json", "r") as file:
         algorithmia_key = json.loads(file.read())["algorithmia_key"]
 
     client = Algorithmia.client(algorithmia_key)   
     algo = client.algo('web/WikipediaParser/0.1.2')  
+    
     content["source_original_content"] = algo.pipe(content['search_term']).result["content"]
-    return content
+
+    save(content)
 
 # Removes blank lines, dates in paretheses, and whatever is left of Markdown
-def sanitize_content(content):
+def sanitize_content():
+    content = load()
+
     article = content['source_original_content']
 
     # Removes blank lines and markdown
@@ -26,7 +33,8 @@ def sanitize_content(content):
     article = re.sub("/\((?:\([^()]*\)|[^()])*\)/gm", '', article)
 
     content["source_sanitized_content"] = article
-    return content
+    
+    save(content)
 
 # Uses IBM Cloud Natural Language Understanding API to analyze the sentences and get keywords
 def watson_keywords(sentence):
@@ -40,17 +48,17 @@ def watson_keywords(sentence):
 
 
 # Breaks the content into understandable sentences
-def break_into_sentences(content, limit=10):
+def break_into_sentences(limit=5):
+    content = load()
+
     content["sentences"] = []
     
     for sentence in sent_tokenize(content["source_sanitized_content"])[:limit]:
         content["sentences"].append({'text':sentence, 'keywords':watson_keywords(sentence), 'images':[]})
     
-    return content
+    save(content)
 
-def text(content, max_sentences=10):
-    content = fetch_wikipedia_article(content)
-    content = sanitize_content(content)
-    content = break_into_sentences(content, max_sentences)
-
-    return content
+def text(max_sentences=5):
+    fetch_wikipedia_article()
+    sanitize_content()
+    break_into_sentences(max_sentences)
