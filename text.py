@@ -10,7 +10,7 @@ def fetch_wikipedia_article(content):
     with open("credentials.json", "r") as file:
         algorithmia_key = json.loads(file.read())["algorithmia_key"]
 
-    client = Algorithmia.client('simAoS+NCBot8SACwnHwpY0ezGR1')   
+    client = Algorithmia.client(algorithmia_key)   
     algo = client.algo('web/WikipediaParser/0.1.2')  
     content["source_original_content"] = algo.pipe(content['search_term']).result["content"]
     return content

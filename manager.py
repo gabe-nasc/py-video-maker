@@ -1,6 +1,7 @@
 from text import *
+from image import *
 
-def get_user_input():
+def get_user_input(content):
     content["search_term"] = input("Type a Wikipedia query: ")
 
     prefixes = ['Who is', 'What is', 'The history of']
@@ -12,8 +13,10 @@ def get_user_input():
     return content
 
 def main():
-    content = get_user_input()
+    content = {}
+    content = get_user_input(content)
     content = text(content)
+    content = image(content)
 
 if __name__ == "__main__":
     main()
